@@ -1,6 +1,6 @@
 <div class="p-4">
     <div class="subheading-2">Agregar Medicamento</div>
-    <form>
+    <form (ngSubmit)="emitDrug()">
         <mat-form-field class="w-full">
             <mat-label>Nombre</mat-label>
             <input [(ngModel)]="drug.name" matInput name="nombre">

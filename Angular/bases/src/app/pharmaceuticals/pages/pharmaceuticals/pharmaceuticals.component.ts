@@ -41,4 +41,9 @@ export class PharmaceuticalsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onNewDrug(drug: Drug) {
+    console.log(drug);
+    this.pharmaceuticals.push(drug);
+  }
+
 }

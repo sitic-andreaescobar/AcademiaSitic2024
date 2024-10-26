@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { EPharmaType } from '../../interfaces/enums.interface';
 import { Drug } from '../../interfaces/drug.interface';
 
@@ -9,6 +9,7 @@ import { Drug } from '../../interfaces/drug.interface';
 })
 export class AddPharmaceuticalsComponent implements OnInit {
 
+  @Output() onNewDrug = new EventEmitter();
   drug: Drug = {
     name: '',
     price: 0,
@@ -29,6 +30,19 @@ export class AddPharmaceuticalsComponent implements OnInit {
 
   emitDrug() {
     console.log(this.drug);
+
+    if(this.drug.name.length === 0)
+      return;
+
+    this.onNewDrug.emit({...this.drug});
+
+    this.clear();
+  }
+
+  clear() {
+    this.drug.name = '';
+    this.drug.price = 0;
+    this.drug.type = EPharmaType.Analgesico;
   }
 
 }

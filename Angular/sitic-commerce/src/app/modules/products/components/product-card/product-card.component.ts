@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+
+// Interfaces
 import { Product } from 'src/app/shared/interfaces/products/product.interface';
 
 @Component({

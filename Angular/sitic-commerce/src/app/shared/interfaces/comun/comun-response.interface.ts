@@ -1,4 +1,5 @@
+import { Error } from "./error.interface";
 export interface ComunResponse {
-    error: any;
+    error: Error;
     isSuccess: boolean;
 }

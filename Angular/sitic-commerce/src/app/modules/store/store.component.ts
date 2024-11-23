@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+
+// Servicios
+import { ProductsService } from 'src/app/shared/services/products.service';
+
+// Interfaces
 import { Product } from 'src/app/shared/interfaces/products/product.interface';
 import { ProductsResponse } from 'src/app/shared/interfaces/products/products-response.interface';
-import { ProductsService } from 'src/app/shared/services/products.service';
+import { eErrorType } from 'src/app/shared/interfaces/comun/enums.interface';
 
 @Component({
   selector: 'app-store',
@@ -22,7 +27,8 @@ export class StoreComponent implements OnInit {
     this.loading = true;
     await this.productsService.getAllProducts().then((resp: ProductsResponse) => {
       this.loading = false;
-      if (resp.error) {
+      if (resp.error && resp.error.errorType !== eErrorType.None) {
+        console.error(resp.error);
         return;
       }
 

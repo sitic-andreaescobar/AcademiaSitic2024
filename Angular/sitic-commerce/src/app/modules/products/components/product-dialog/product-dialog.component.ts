@@ -2,11 +2,15 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ScreenStatus } from 'src/app/shared/interfaces/comun/enums.interface';
-import { Product } from 'src/app/shared/interfaces/products/product.interface';
-import { ProductsResponse } from 'src/app/shared/interfaces/products/products-response.interface';
+
+// Servicios
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
+
+// Interfaces
+import { eErrorType, eScreenStatus } from 'src/app/shared/interfaces/comun/enums.interface';
+import { Product } from 'src/app/shared/interfaces/products/product.interface';
+import { ProductsResponse } from 'src/app/shared/interfaces/products/products-response.interface';
 
 @Component({
   selector: 'app-product-dialog',
@@ -17,7 +21,7 @@ export class ProductDialogComponent implements OnInit {
 
   id: number;
   product: Product;
-  screenStatus: ScreenStatus;
+  eScreenStatus: eScreenStatus;
   formProduct: FormGroup;
   loading: boolean = false;
 
@@ -31,11 +35,11 @@ export class ProductDialogComponent implements OnInit {
     private snackbar: MatSnackBar,
     private fb: FormBuilder) { 
       this.id = this.data.id;
-      this.screenStatus = this.data.screenStatus;
+      this.eScreenStatus = this.data.eScreenStatus;
     }
 
   async ngOnInit(): Promise<void> {
-    let disableFields: boolean = this.screenStatus === ScreenStatus.ViewDetail;
+    let disableFields: boolean = this.eScreenStatus === eScreenStatus.ViewDetail;
 
     this.formProduct = this.fb.group({
       name: [{ value: '', disabled: disableFields }, Validators.required],
@@ -58,22 +62,22 @@ export class ProductDialogComponent implements OnInit {
       ]
     });
 
-    switch(this.screenStatus) {
-      case ScreenStatus.Adding:
+    switch(this.eScreenStatus) {
+      case eScreenStatus.Adding:
         this.title = 'Agregar producto';
         this.icon = 'mat:edit';
         break;
-      case ScreenStatus.Updating:
+      case eScreenStatus.Updating:
         this.title = `Modificar producto`;
         this.icon = 'mat:edit';
         break;
-      case ScreenStatus.ViewDetail:
+      case eScreenStatus.ViewDetail:
         this.title = `Detalle producto`;
         this.icon = 'mat:read_more';
         break;
     }
 
-    if(this.screenStatus !== ScreenStatus.Adding) {
+    if(this.eScreenStatus !== eScreenStatus.Adding) {
         await this.getById(this.id);
     } else {
       // Inicializa objeto
@@ -93,15 +97,15 @@ export class ProductDialogComponent implements OnInit {
   }
 
   async onSubmit() {
-    if(this.screenStatus === ScreenStatus.ViewDetail)
+    if(this.eScreenStatus === eScreenStatus.ViewDetail)
       this.dialogRef.close({ ok: true, product: this.product});
 
     if(!await this.validateAllFields())
       return;
 
-    if (this.screenStatus === ScreenStatus.Adding) {
+    if (this.eScreenStatus === eScreenStatus.Adding) {
       this.addProduct();
-    } else if(this.screenStatus === ScreenStatus.Updating) {
+    } else if(this.eScreenStatus === eScreenStatus.Updating) {
       this.updateProduct();     
     }
   }
@@ -110,8 +114,10 @@ export class ProductDialogComponent implements OnInit {
     this.loading = true;
     this.productsService.updateProduct(this.product).then((resp: ProductsResponse) => {
       this.loading = false;
-      if (resp.error)
+      if (resp.error && resp.error.errorType !== eErrorType.None) {
+        console.error(resp.error);
         return;
+      }
 
     this.dialogRef.close({ refreshProducts: true, product: this.product });
 
@@ -124,8 +130,10 @@ export class ProductDialogComponent implements OnInit {
     this.loading = true;
     this.productsService.addProduct(this.product).then((resp: ProductsResponse) => {
       this.loading = false;
-      if (resp.error)
+      if (resp.error && resp.error.errorType !== eErrorType.None) {
+        console.error(resp.error);
         return;
+      }
 
       this.dialogRef.close({ refreshProducts: true, product: this.product });
 
@@ -138,7 +146,8 @@ export class ProductDialogComponent implements OnInit {
     this.loading = true;
     await this.productsService.getById(id).then((resp: ProductsResponse) => {
       this.loading = false;
-      if (resp.error) {
+      if (resp.error && resp.error.errorType !== eErrorType.None) {
+        console.error(resp.error);
         return;
       }
 

@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Product } from 'src/app/shared/interfaces/products/product.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
-import { ScreenStatus } from 'src/app/shared/interfaces/comun/enums.interface';
-import { ProductDialogComponent } from './components/product-dialog/product-dialog.component';
-import { ProductsService } from 'src/app/shared/services/products.service';
-import { ProductsResponse } from 'src/app/shared/interfaces/products/products-response.interface';
 import { MatTableDataSource } from '@angular/material/table';
+
+// Componentes
+import { ProductDialogComponent } from './components/product-dialog/product-dialog.component';
+
+// Servicios
+import { ProductsService } from 'src/app/shared/services/products.service';
+
+// Interfaces
+import { eErrorType, eScreenStatus } from 'src/app/shared/interfaces/comun/enums.interface';
+import { ProductsResponse } from 'src/app/shared/interfaces/products/products-response.interface';
+import { Product } from 'src/app/shared/interfaces/products/product.interface';
 
 @Component({
   selector: 'app-products',
@@ -32,7 +38,8 @@ export class ProductsComponent implements OnInit {
     this.loading = true;
     await this.productsService.getAllProducts().then((resp: ProductsResponse) => {
       this.loading = false;
-      if (resp.error) {
+      if (resp.error && resp.error.errorType !== eErrorType.None) {
+        console.error(resp.error);
         return;
       }
 
@@ -48,27 +55,27 @@ export class ProductsComponent implements OnInit {
   }
 
   onClickReadMore(item: Product){
-    this.showDialogProduct(ScreenStatus.ViewDetail, item.id);
+    this.showDialogProduct(eScreenStatus.ViewDetail, item.id);
   }
 
   async onClickModify(item: Product){
-    let result = await this.showDialogProduct(ScreenStatus.Updating, item.id);
+    let result = await this.showDialogProduct(eScreenStatus.Updating, item.id);
 
     if(result.refreshProducts)
       this.getAllProducts();
   }
 
   async onClickAdd() {
-    let result = await this.showDialogProduct(ScreenStatus.Adding);
+    let result = await this.showDialogProduct(eScreenStatus.Adding);
 
     if(result.refreshProducts)
       this.getAllProducts();
   }
 
-  async showDialogProduct(screenStatus: ScreenStatus, id?: number):Promise<any> {
+  async showDialogProduct(eScreenStatus: eScreenStatus, id?: number):Promise<any> {
     const dialogProduct = this.dialog.open(ProductDialogComponent, {
       data: { 
-        screenStatus,
+        eScreenStatus,
         id
       },
       disableClose: true

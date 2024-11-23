@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  SERVER_SS: '',
+  SERVER_SS: 'http://10.20.109.43:61899',
 };
 
 /*

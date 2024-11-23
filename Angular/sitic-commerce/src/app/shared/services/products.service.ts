@@ -14,7 +14,7 @@ export class ProductsService {
 
     private _actionUrls: string;
     constructor(public http: HttpClient) {
-        this._actionUrls = `${environment.SERVER_SS}/Product`;;
+        this._actionUrls = `${environment.URI_SERVER}/Product`;;
     }
 
     async getById(id: number): Promise<ProductsResponse> {

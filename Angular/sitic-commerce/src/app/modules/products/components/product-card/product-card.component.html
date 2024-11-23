@@ -1,0 +1,38 @@
+<div class="rounded-md bg-neutral-50 shadow-md">
+  <div class="p-2 text-center relative" matRipple>
+
+    <!-- Imagen de producto -->
+    <img *ngIf="false; else noImage" data-base64="true" [src]="product.imagePath" class="h-24 w-24 mx-auto rounded-lg">
+    
+    <ng-template #noImage> 
+    <div class="h-24 w-24 mx-auto leading-none flex items-center justify-center">
+      <mat-icon svgIcon="mat:hide_image" class="text-secondary icon-5xl"></mat-icon>
+    </div>
+    </ng-template>
+
+    <h2 class="title mb-1 mt-3">{{ product?.name }}</h2>
+    <div class="caption text-secondary flex items-center justify-center">
+      <span>{{ product?.description }}</span>
+    </div>
+
+    <!-- Botón agregar al carrito -->
+    <button class="absolute top-2 right-2" mat-icon-button type="button">
+      <mat-icon svgIcon="mat:add_shopping_cart" class="icon-base text-cyan-500"></mat-icon>
+    </button>
+
+    <!-- Etiqueta nuevo -->
+    <!-- Esta etiqueta solo debe de mostrarse si el producto fue creado en una fecha no mayor a dos días -->
+    <div class="absolute top-4 left-2">
+      <span class="rounded px-2 py-1 flex-none bg-purple-600/10 text-purple-600">New</span>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Card footer -->
+  <div class="p-2 flex items-center justify-between">
+    <span class="body-2 text-cyan-500">{{ product.price ?? 0 | number:'.2'}}</span>
+    <!-- La existencia debe de ser representada con un color caracteristico en base al minStock, maxStock y currentStock del producto -->
+    <span class="rounded px-2 py-1 flex-none bg-gray-600/10 text-gray-600">{{ (product.currentStock ?? 0) | number: '1.0-0' }}</span>
+  </div>
+</div>

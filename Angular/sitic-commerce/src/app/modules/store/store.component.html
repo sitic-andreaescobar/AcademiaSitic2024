@@ -1,0 +1,17 @@
+<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+<div class="h-full flex flex-col">
+    <div class="p-6 pb-0 bg-foreground shadow-b flex-none border-b border-gray-200">
+        <div class="container px-0">
+            <div *ngIf="productList.length > 0" class="overflow-y-auto flex-auto">
+                <div class="p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-6 container">
+                    <!-- Product card debe emitir un evento al dar clic al botón 'Agregar al carrito'
+                         el cual debe de emitir el producto para que store.component lo escuche -->
+
+                    <!-- Product card debe recibir el producto para poder renderizar su información -->
+                    <product-card *ngFor="let product of productList"></product-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  

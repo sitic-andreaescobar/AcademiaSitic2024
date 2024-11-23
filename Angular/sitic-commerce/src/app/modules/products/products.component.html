@@ -1,0 +1,103 @@
+<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+<div class="p-4 overflow-x-auto">
+    <div class="bg-neutral-300 p-4 left-0 flex items-center gap-2 sticky">
+        <span class="title hidden md:inline">Productos</span>
+        
+        <div class="bg-foreground rounded-lg px-4 mx-4 max-w-[200px] border border-neutral-800 flex flex-row items-center">
+            <mat-icon svgIcon="mat:search" class="icon-base"></mat-icon>
+            <input class="px-4 py-3 border-0 outline-none w-full bg-transparent" placeholder="Buscar..." type="search">
+        </div>
+
+        <div class="flex-grow"></div>
+
+        <button mat-stroked-button color="primary" (click)="getAllProducts()" [disabled]="loading">
+          <mat-icon color="primary" svgIcon="mat:refresh" class="icon-base"></mat-icon>
+          Actualizar
+        </button>
+
+        <button mat-stroked-button color="primary" (click)="onClickAdd()" [disabled]="loading">
+          <mat-icon color="primary" svgIcon="mat:add" class="icon-base"></mat-icon>
+          Agregar
+        </button>
+    </div>
+
+    <table mat-table [dataSource]="dataSource" class="w-full border border-gray-200 shadow-sm rounded-lg">
+        <ng-container matColumnDef="actions" sticky>
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+                <button style="display: inline-flex;" class="mx-1 w-8 h-8 leading-none flex items-center justify-center hover:bg-hover text-primary bg-primary/10" mat-icon-button matTooltip="Opciones" aria-label="Opciones"
+                    [matMenuTriggerFor]="menu">
+                    <mat-icon color="primary" svgIcon="mat:more_vert" class="icon-base"></mat-icon>
+                </button>
+
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item class="flex items-center rounded text-sm font-medium h-10 pl-2 pr-6 transition duration-100 ease-out"
+                        (click)="onClickDelete(element)">
+                        <mat-icon  color="warn" svgIcon="mat:delete" class="icon-base" inline="true"></mat-icon>
+                        <span>Eliminar</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item class="flex items-center rounded text-sm font-medium h-10 pl-2 pr-6 transition duration-100 ease-out"
+                        (click)="onClickReadMore(element)">
+                        <mat-icon color="primary" svgIcon="mat:read_more" class="icon-base" inline="true"></mat-icon>
+                        <span>Ver detalle</span>
+                    </button>
+                    <button mat-menu-item class="flex items-center rounded text-sm font-medium h-10 pl-2 pr-6 transition duration-100 ease-out"
+                        (click)="onClickModify(element)">
+                        <mat-icon color="primary" svgIcon="mat:edit" class="icon-base" inline="true"></mat-icon>
+                        <span>Modificar</span>
+                    </button>
+                </mat-menu>
+            </td>
+          </ng-container>
+
+      <ng-container matColumnDef="imgPath" sticky>
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element" >
+            <img *ngIf="false; else noImage" data-base64="true" [src]="element.imagePath" class="mr-4 h-8 w-8 align-middle rounded-lg">
+            <ng-template #noImage> 
+                <div class="mx-2 h-8 w-8 rounded-lg bg-neutral-400 leading-none flex items-center justify-center">
+                    <mat-icon svgIcon="mat:image" class="text-neutral-100 icon-base"></mat-icon>
+                </div>
+            </ng-template>
+        </td> 
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef class="text-left uppercase">nombre</th>
+        <td mat-cell *matCellDef="let element" class="text-medium text-neutral-500">{{ element.name }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef class="text-left uppercase">descripcion</th>
+        <td mat-cell *matCellDef="let element" class="text-medium text-neutral-500 max-w-[250px] truncate">{{ element.description }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef class="text-left uppercase">precio</th>
+        <td mat-cell *matCellDef="let element" class="text-medium text-neutral-500">${{ element.price | number: '1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="currentStock">
+        <th mat-header-cell *matHeaderCellDef class="text-left uppercase">Existencia</th>
+        <td mat-cell *matCellDef="let element" class="text-medium text-neutral-500">{{ element.currentStock | number: '1.2-2' }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="updatedAt">
+        <th mat-header-cell *matHeaderCellDef class="text-left uppercase">ult. actualizacion</th>
+        <td mat-cell *matCellDef="let element" class="text-medium text-neutral-500">{{ element.updatedAt | date: 'mediumDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="tags">
+        <th mat-header-cell *matHeaderCellDef class="text-left uppercase"></th>
+        <td mat-cell *matCellDef="let element" class="text-medium text-neutral-500"></td>
+      </ng-container>
+  
+      <!-- Header and Row Declarations -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50 border-b">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50">
+      </tr>
+    </table>
+  </div>
+  

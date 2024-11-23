@@ -1,0 +1,44 @@
+<mat-sidenav-container class="h-screen">
+  <!-- Barra lateral -->
+  <mat-sidenav #sidenav mode="side" class="bg-neutral-900 w-72 p-4">
+    <mat-toolbar class="title bg-neutral-900 text-neutral-100">
+      {{ clientName }}
+    </mat-toolbar>
+
+    <mat-divider class="bg-neutral-600"></mat-divider>
+
+    <div class="flex flex-col space-y-2 py-4">
+      <a *ngFor="let route of routes" 
+         [routerLink]="route.path" 
+         routerLinkActive="bg-blue-500/50 text-neutral-100" 
+         class="flex items-center py-2 px-4 hover:bg-blue-500/20 rounded-lg transition hover:ease-in text-neutral-300">
+         <mat-icon [svgIcon]="route.icon" class="icon-base" inline="true"></mat-icon>
+         <span class="mx-4 body-1">{{ route.title }}</span>
+      </a>
+    </div>
+  </mat-sidenav>
+
+  <!-- Contenido principal -->
+  <mat-sidenav-content class="flex flex-col bg-neutral-200">
+    <!-- Barra superior -->
+    <mat-toolbar class="bg-neutral-100 text-neutral-950">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon svgIcon="mat:menu" class="icon-base" inline="true"></mat-icon>
+      </button>
+      <span class="flex-1 basis-auto"></span>
+      <button mat-icon-button>
+        <mat-icon svgIcon="mat:shopping_cart" class="icon-base" inline="true"></mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- Área de contenido -->
+    <main class="flex-1 overflow-auto">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-100 text-neutral-950 text-center p-4">
+      &copy; 2024 {{ clientName }}. Todos los derechos reservados.
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

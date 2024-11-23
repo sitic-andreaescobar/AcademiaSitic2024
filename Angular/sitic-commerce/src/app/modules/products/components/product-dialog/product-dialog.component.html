@@ -1,0 +1,65 @@
+<span mat-dialog-title>
+    <span class="flex items-center pb-2">
+        <mat-icon [svgIcon]="icon" class="icon-base" inline="true"></mat-icon>
+        <span class="mx-4 subheading-2">{{ title }}</span>
+    </span>
+
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+</span>
+
+<mat-dialog-content>
+  <form autocomplete="off" [formGroup]="formProduct">
+    <div class="flex flex-col">
+
+        <div class="grid grid-cols-2 gap-4">
+            <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input formControlName="name" matInput>
+                <mat-error *ngIf="formProduct.get('name').hasError('required')">Este campo es requerido</mat-error>
+            </mat-form-field>
+    
+            <mat-form-field appearance="outline">
+                <mat-label>Precio</mat-label>
+                <input formControlName="price" matInput type="number" (keypress)="sharedService.validateNumber($event)">
+                <mat-icon svgIcon="mat:attach_money" class="mr-2 text-secondary icon-base" matPrefix></mat-icon>
+                <mat-error *ngIf="formProduct.get('price').hasError('required')">Este campo es requerido</mat-error>
+                <mat-error *ngIf="formProduct.get('price')?.hasError('min') && formProduct.get('price')?.touched">El valor debe ser mayor a 0</mat-error>
+            </mat-form-field>    
+        </div>
+        
+        <mat-form-field appearance="outline">
+            <mat-label>Descripción</mat-label>
+            <textarea formControlName="description" matInput class="resize-none"></textarea>
+            <mat-error *ngIf="formProduct.get('description').hasError('required')">Este campo es requerido</mat-error>
+        </mat-form-field>
+
+        <div class="grid grid-cols-3 gap-4">
+            <mat-form-field appearance="outline">
+                <mat-label>Stock Actual</mat-label>
+                <input formControlName="currentStock" matInput type="number" (keypress)="sharedService.validateNumber($event)">
+                <mat-error *ngIf="formProduct.get('currentStock').hasError('required')">Este campo es requerido</mat-error>
+                <mat-error *ngIf="formProduct.get('currentStock')?.hasError('min') && formProduct.get('currentStock')?.touched">El valor debe ser mayor a 0</mat-error>
+            </mat-form-field>
+    
+            <mat-form-field appearance="outline">
+                <mat-label>Stock Mínimo</mat-label>
+                <input formControlName="maxStock" matInput type="number" (keypress)="sharedService.validateNumber($event)">
+                <mat-error *ngIf="formProduct.get('maxStock').hasError('required')">Este campo es requerido</mat-error>
+                <mat-error *ngIf="formProduct.get('maxStock')?.hasError('min') && formProduct.get('maxStock')?.touched">El valor debe ser mayor a 0</mat-error>
+            </mat-form-field>
+    
+            <mat-form-field appearance="outline">
+                <mat-label>Stock Máximo</mat-label>
+                <input formControlName="minStock" matInput type="number" (keypress)="sharedService.validateNumber($event)">
+                <mat-error *ngIf="formProduct.get('minStock').hasError('required')">Este campo es requerido</mat-error>
+                <mat-error *ngIf="formProduct.get('minStock')?.hasError('min') && formProduct.get('minStock')?.touched">El valor debe ser mayor a 0</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="flex justify-end space-x-2">
+    <button mat-flat-button mat-dialog-close cdkFocusInitial [disabled]="loading">Cancelar</button>  
+    <button mat-flat-button color="primary" [disabled]="loading" (click)="onSubmit()">ACEPTAR</button>
+</mat-dialog-actions>
